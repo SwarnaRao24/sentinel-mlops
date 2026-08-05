@@ -15,6 +15,7 @@ dependencies = [
     "lightgbm>=4.7.0",
     "mlflow>=3.15.0",
     "pandas>=2.3.3",
+    "pandas-stubs~=2.3.3",
     "pydantic>=2.13.4",
     "scikit-learn>=1.7.2",
     "uvicorn>=0.52.1",
@@ -30,7 +31,13 @@ build-backend = "uv_build"
 [tool.setuptools.packages.find]
 where = ["src"]
 
+
 [dependency-groups]
 dev = [
     "pre-commit>=4.6.1",
+    "pytest>=9.1.1",
 ]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
