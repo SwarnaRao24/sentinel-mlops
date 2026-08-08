@@ -127,3 +127,43 @@ class StabilityGate(Gate):
             reason="outputs stable" if passed else "; ".join(problems),
             details={"mean_ratio": mean_ratio, "std_ratio": std_ratio},
         )
+class ShadowGate(Gate):
+    """Challenger must hold up across a sequence of live-like traffic batches.
+
+    Where the other gates judge one static holdout, this simulates a shadow
+    deployment: the challenger scores consecutive recent batches, and must beat
+    the champion (or at least not regress) on EVERY batch, not just on average.
+    Catches a challenger that looks fine overall but is unreliable batch-to-batch.
+    """
+
+    name = "shadow"
+
+    def __init__(self, batches: list[dict], max_regressions: int = 0):
+        """`batches` is a list of {champion_mae, challenger_mae} per shadow window."""
+        self.batches = batches
+        self.max_regressions = max_regressions
+
+    def check(self, ctx: GateContext) -> GateResult:
+        if not self.batches:
+            return GateResult(self.name, False, "no shadow batches provided")
+
+        regressed = []
+        for i, b in enumerate(self.batches):
+            if b["challenger_mae"] > b["champion_mae"]:
+                regressed.append((i, b["challenger_mae"] - b["champion_mae"]))
+
+        passed = len(regressed) <= self.max_regressions
+        total = len(self.batches)
+        if passed:
+            reason = f"held up across all {total} shadow batches"
+        else:
+            reason = (
+                f"regressed in {len(regressed)}/{total} shadow batches "
+                f"(worst +{max(r for _, r in regressed):.2f} MAE)"
+            )
+        return GateResult(
+            gate_name=self.name,
+            passed=passed,
+            reason=reason,
+            details={"batches": total, "regressed": len(regressed)},
+        )

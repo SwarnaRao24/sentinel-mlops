@@ -83,3 +83,22 @@ def test_run_gates_one_fail_blocks(base_data):
     gates = [PerformanceGate(), SegmentGate(), StabilityGate()]
     ok, results = run_gates(gates, _ctx(y, champ, broken, seg))
     assert not ok  # any single failure blocks promotion
+
+def test_shadow_gate_passes_consistent_challenger():
+    from sentinel.validation.gates import ShadowGate
+    batches = [{"champion_mae": 15, "challenger_mae": 12} for _ in range(5)]
+    ctx = GateContext(champion_preds=np.array([]), challenger_preds=np.array([]),
+                      y_true=np.array([]))
+    r = ShadowGate(batches).check(ctx)
+    assert r.passed
+
+
+def test_shadow_gate_blocks_batch_regression():
+    from sentinel.validation.gates import ShadowGate
+    batches = [{"champion_mae": 15, "challenger_mae": 11} for _ in range(4)]
+    batches.append({"champion_mae": 15, "challenger_mae": 20})  # one bad batch
+    ctx = GateContext(champion_preds=np.array([]), challenger_preds=np.array([]),
+                      y_true=np.array([]))
+    r = ShadowGate(batches).check(ctx)
+    assert not r.passed
+    assert "1/5" in r.reason
