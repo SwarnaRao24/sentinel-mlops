@@ -3,8 +3,6 @@
 Every prediction served is recorded here with full lineage: the input
 features, the output, the model version, the code commit, and latency.
 Downstream (drift detection, label join, validation) all read from this.
-
-Starts on SQLite for local dev; the same schema moves to Postgres later.
 """
 from __future__ import annotations
 
@@ -43,7 +41,7 @@ def init_db(db_path: Path = DB_PATH) -> None:
             model_version   TEXT NOT NULL,
             code_sha        TEXT NOT NULL,
             latency_ms      REAL NOT NULL,
-            actual          REAL,            -- filled in later by the label join
+            actual          REAL,
             actual_at       TEXT
         )
         """
