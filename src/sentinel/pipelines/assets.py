@@ -87,18 +87,21 @@ def gate_results(context, challenger_model) -> dict | None:
 
 
 @asset
-def promotion_outcome(context, gate_results: dict | None) -> dict:
-    """Promote or quarantine based on gate results."""
-    if gate_results is None:
+def promotion_outcome(context, challenger_model, gate_results: dict | None) -> dict:
+    """Promote or quarantine based on gate results, and write the audit trail."""
+    if gate_results is None or challenger_model is None:
         context.log.info("nothing to promote (no challenger this run)")
         return {"action": "noop"}
 
     from sentinel.validation.base import GateResult
+    from sentinel.pipelines.promotion import execute_promotion
+    from sentinel.pipelines.retraining import MODEL_NAME
+
     results = [GateResult(n, p, r) for n, p, r in gate_results["results"]]
-    decision = decide_promotion(results)
-    action = "promoted" if decision["promote"] else "quarantined"
-    context.log.info(f"outcome: {action} (failed: {decision['failed_gates']})")
-    return {"action": action, **decision}
+    outcome = execute_promotion(challenger_model, results, model_name=MODEL_NAME)
+    context.log.info(f"outcome: {outcome['action']} "
+                     f"(failed: {outcome.get('failed_gates', [])})")
+    return outcome
 
 defs = Definitions(
     assets=[drift_status, retrain_decision, challenger_model,
