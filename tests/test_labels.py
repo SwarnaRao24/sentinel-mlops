@@ -1,5 +1,4 @@
 """Tests for the late-label stream and reconciliation join."""
-import numpy as np
 import pandas as pd
 import pytest
 

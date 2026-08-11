@@ -13,7 +13,6 @@ from dagster import Definitions, asset
 
 from sentinel.monitoring.events import open_events
 from sentinel.pipelines.decision import should_retrain
-from sentinel.pipelines.promotion import decide_promotion
 from sentinel.pipelines.retraining import (
     MODEL_NAME,
     build_gate_context,
@@ -93,9 +92,8 @@ def promotion_outcome(context, challenger_model, gate_results: dict | None) -> d
         context.log.info("nothing to promote (no challenger this run)")
         return {"action": "noop"}
 
-    from sentinel.validation.base import GateResult
     from sentinel.pipelines.promotion import execute_promotion
-    from sentinel.pipelines.retraining import MODEL_NAME
+    from sentinel.validation.base import GateResult
 
     results = [GateResult(n, p, r) for n, p, r in gate_results["results"]]
     outcome = execute_promotion(challenger_model, results, model_name=MODEL_NAME)

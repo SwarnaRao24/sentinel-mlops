@@ -26,7 +26,6 @@ _state: dict = {}
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     init_db()
-    model_uri = f"models:/{MODEL_NAME}/{_state.get('version', '1')}"
     _state["model"] = mlflow.sklearn.load_model(f"models:/{MODEL_NAME}/1")
     _state["model_version"] = "1"
     yield

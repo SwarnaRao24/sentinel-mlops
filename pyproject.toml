@@ -36,6 +36,7 @@ where = ["src"]
 dev = [
     "pre-commit>=4.6.1",
     "pytest>=9.1.1",
+    "ruff>=0.16.2",
 ]
 
 [tool.pytest.ini_options]
@@ -44,3 +45,9 @@ testpaths = ["tests"]
 
 [tool.dagster]
 module_name = "sentinel.pipelines.assets"
+
+[tool.ruff.lint]
+# Rules intentionally disabled:
+#   BLE001 - blind except is deliberate in _git_sha (git failure must not break logging)
+#   RUF059 - unpacked-but-unused is fine in tests where we assert on one element
+ignore = ["BLE001", "RUF059"]
