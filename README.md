@@ -1,3 +1,4 @@
+[![CI](https://github.com/SwarnaRao24/sentinel-mlops/actions/workflows/ci.yml/badge.svg)](https://github.com/SwarnaRao24/sentinel-mlops/actions/workflows/ci.yml)
 # Sentinel MLOps
 
 **A self-healing ML serving platform that detects its own model degradation and safely retrains, validates, and promotes new models — with guardrails that block a worse model from ever reaching production.**

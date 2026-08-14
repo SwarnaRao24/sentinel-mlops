@@ -28,8 +28,6 @@ sentinel-mlops = "sentinel_mlops:main"
 requires = ["uv_build>=0.12.1,<0.13.0"]
 build-backend = "uv_build"
 
-[tool.setuptools.packages.find]
-where = ["src"]
 
 
 [dependency-groups]
@@ -51,3 +49,6 @@ module_name = "sentinel.pipelines.assets"
 #   BLE001 - blind except is deliberate in _git_sha (git failure must not break logging)
 #   RUF059 - unpacked-but-unused is fine in tests where we assert on one element
 ignore = ["BLE001", "RUF059"]
+
+[tool.uv.build-backend]
+module-name = "sentinel"
