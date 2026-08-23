@@ -124,4 +124,4 @@ uv run uvicorn sentinel.serving.app:app --port 8000
 
 ---
 
-*Built by Swarnamukhi Chintalapudi · [GitHub](https://github.com/SwarnaRao24) · [LinkedIn](https://www.linkedin.com/in/swarnamukhirchintalapudi) · [Portfolio](https://www.theswarnaraogroup.com)*
+*Built by Swarnamukhi Chintalapudi · [GitHub](https://github.com/SwarnaRao24) · [LinkedIn](https://www.linkedin.com/in/swarnaraoc) · [Portfolio](https://www.theswarnaraogroup.com)*
